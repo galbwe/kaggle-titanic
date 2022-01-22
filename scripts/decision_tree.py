@@ -26,11 +26,13 @@ def preprocess_dataframe(df: pd.DataFrame, features: List[str], label: str) -> T
     # Convert the string values to numeric values
     if "Sex" in df.columns:
         df["Sex"] = LabelEncoder().fit_transform(df["Sex"])
+    if "Embarked" in df.columns:
+        df["Embarked"] = LabelEncoder().fit_transform(df["Embarked"])
     return df
 
 
 def train_decision_tree_classifier(x_train, y_train):
-    clf = DecisionTreeClassifier(random_state=42)
+    clf = DecisionTreeClassifier(max_depth=5, random_state=42)
     clf = clf.fit(x_train, y_train)
     return clf
 
@@ -40,7 +42,7 @@ def train_decision_tree_classifier(x_train, y_train):
 @click.option("--test", default="./data/test.csv", help="Path to the test data")
 @click.option("--predict", default="./predictions/", help="Path to the predictions directory")
 def decision_tree(train, test, predict):
-    features = ["Sex", "Age", "Pclass", "SibSp", "Parch"]
+    features = ["Sex", "Age", "Pclass", "SibSp", "Parch", "Embarked"]
     label = "Survived"
     train_df = pd.read_csv(train)
     train_df = preprocess_dataframe(train_df, features, label)
